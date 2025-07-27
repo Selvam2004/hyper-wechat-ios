@@ -6,7 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface HyperWeChat : NSObject
 
-+ (BOOL)registerApp:(NSString *)universalLink;
++ (BOOL)registerApp:(NSString *)appId universalLink:(NSString *)universalLink;
 
 @end
 
