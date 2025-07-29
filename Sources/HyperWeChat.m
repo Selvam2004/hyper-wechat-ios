@@ -19,8 +19,7 @@
     return self;
 }
 
-+ (BOOL)registerApp:(NSString *)universalLink {
-    NSString *appId = @"wxd54f6f583d883a64"; 
++ (BOOL)registerApp:(NSString *)appId universalLink:(NSString *)universalLink {
      
     BOOL success = [WXApi registerApp:appId universalLink:universalLink];
     
