@@ -8,6 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (BOOL)registerApp:(NSString *)appId universalLink:(NSString *)universalLink;
 
++ (BOOL)continueActivity:(NSUserActivity *)userActivity;
+
 @end
 
 NS_ASSUME_NONNULL_END

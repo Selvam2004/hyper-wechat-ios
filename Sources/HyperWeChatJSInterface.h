@@ -11,8 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startWeChatPayWalletFlow:(nullable NSString *)deeplink :(nullable NSString *)env :(nullable NSString *)callback;
 
-+ (instancetype)sharedInstance;
-
 @end
 
 NS_ASSUME_NONNULL_END

@@ -1,20 +1,15 @@
 #import "HyperWeChatJSInterface.h"
 
-@implementation HyperWeChatJSInterface {
-    NSString *_callback;
-}
+@interface HyperWeChatJSInterface()
 
-+ (instancetype)sharedInstance {
-    static HyperWeChatJSInterface *sharedInstance = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        sharedInstance = [[HyperWeChatJSInterface alloc] init];
-    });
-    return sharedInstance;
-}
+@property NSString *callback;
+
+@end
+
+@implementation HyperWeChatJSInterface
 
 - (void)startWeChatPayWalletFlow:(nullable NSString *)deeplink :(nullable NSString *)env :(nullable NSString *)callback {
-    _callback = callback;
+    self.callback = callback;
 
     if (deeplink == nil) {
         [self sendCallbackWithResult:@{@"is_successful": @"false", @"error": @"Deeplink is missing"}];
@@ -57,18 +52,8 @@
     }];
 }
 
-
-- (void)onResp:(BaseResp *)resp {
-    if (![resp isKindOfClass:[PayResp class]]) return;
-
-    PayResp *payResp = (PayResp *)resp;
-    NSString *result = payResp.errCode == 0 ? @"true" : @"false";
-
-    [self sendCallbackWithResult:@{@"is_successful": result}];
-}
-
 - (void)sendCallbackWithResult:(NSDictionary *)resultDict {
-    if (!_callback || !_bridgeComponent) return;
+    if (!self.callback || !self.bridgeComponent) return;
 
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:resultDict options:0 error:&error];
@@ -77,8 +62,19 @@
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     jsonString = [jsonString stringByReplacingOccurrencesOfString:@"'" withString:@"\\'"];
 
-    NSString *js = [NSString stringWithFormat:@"window.callUICallback('%@', '%@')", _callback, jsonString];
-    [_bridgeComponent executeOnWebView:js];
+    NSString *js = [NSString stringWithFormat:@"window.callUICallback('%@', '%@')", self.callback, jsonString];
+    [self.bridgeComponent executeOnWebView:js];
+}
+
+#pragma mark - WeChat Delegate
+
+- (void)onResp:(BaseResp *)resp {
+    if (![resp isKindOfClass:[PayResp class]]) return;
+
+    PayResp *payResp = (PayResp *)resp;
+    NSString *result = payResp.errCode == 0 ? @"true" : @"false";
+
+    [self sendCallbackWithResult:@{@"is_successful": result}];
 }
 
 @end
